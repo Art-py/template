@@ -1,0 +1,52 @@
+
+services:
+  web:
+    build: .
+    container_name: backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - mainweb
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    env_file:
+      - .env
+    networks:
+      - mainweb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    env_file:
+      - .env
+    volumes:
+      - pgadmin:/var/lib/postgresql/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - mainweb
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  mainweb:
+
+volumes:
+  postgres_data:
+  postgres_logs:
+  pgadmin:
