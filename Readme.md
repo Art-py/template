@@ -40,7 +40,7 @@ template/
 
 **Для разработки**:
    ```bash
-   uvicorn app.main:app --reload
+   python3 main.py
    ```
 **Для теста локально**:
    ```bash
