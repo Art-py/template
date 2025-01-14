@@ -9,9 +9,9 @@ class CustomException(Exception):
         self.detail = detail
 
 
-async def custom_exception_handler(request: Request, exc: CustomException):
+async def custom_exception_handler(request: Request, exc: CustomException, status: int = 400):
     return JSONResponse(
-        status_code=400,
+        status_code=status,
         content={
             "error": exc.name,
             "message": exc.detail,
@@ -19,9 +19,9 @@ async def custom_exception_handler(request: Request, exc: CustomException):
     )
 
 
-async def global_exception_handler(request: Request, exc: Exception):
+async def global_exception_handler(request: Request, exc: Exception, status: int = 500):
     return JSONResponse(
-        status_code=500,
+        status_code=status,
         content={
             "error": "Internal Server Error",
             "message": str(exc),
